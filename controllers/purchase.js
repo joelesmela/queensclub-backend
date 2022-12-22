@@ -16,7 +16,10 @@ const getPurchases = async (req, res) => {
     const purchase = await Purchase.find();
     res.json(purchase);
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    return res.status(400).json({
+      message: "Cannot get purchase",
+    });
   }
 };
 
@@ -33,7 +36,8 @@ const getUserOrQueenPurchase = async (req, res) => {
       res.json(result);
     }
   } catch (error) {
-    res.status(400).json({ error: "algo salio mal" });
+    console.log(error);
+    return res.status(400).json({ error: "algo salio mal" });
   }
 };
 
@@ -42,11 +46,11 @@ const getUserOrQueenPurchase = async (req, res) => {
 const getPurchaseById = async (req, res) => {
   const { id } = req.params;
   try {
-    const { id } = req.params;
     const respuesta = await Purchase.findById(id);
     res.json(respuesta);
   } catch (error) {
-    res.json({ error: "compra no encontrada" });
+    console.log(error);
+    return res.json({ error: "compra no encontrada" });
   }
 };
 
@@ -73,17 +77,18 @@ const getGalleryPuchaseUser = async (req, res) => {
       res.json(galleryPhotos);
     }
   } catch (error) {
-    res.json({ error: "galeria no encontrada" });
+    console.log(error);
+    return res.json({ error: "galeria no encontrada" });
   }
 };
 
 // crear compra mercadoPago
 
 const createPaymentmercado = async (req, res) => {
+  const { id } = req.body.data;
   try {
     const { action } = req.body;
     if (action === "payment.updated") {
-      const { id } = req.body.data;
       let compra = await mercadopago.payment.findById(id);
       const { status, status_detail } = compra.body;
       if (status === "approved" && status_detail === "accredited") {
@@ -110,6 +115,8 @@ const createPaymentmercado = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    console.log(id);
+    return res.json({ error: "guardado en la base compra MP " });
   }
 };
 
@@ -117,9 +124,7 @@ const createPaymentmercado = async (req, res) => {
 
 const createPaymentpaypal = async (req, res) => {
   const { galleryName, queen, price_USD } = req.body;
-
   const queenId = await User.findOne({ userName: queen }, "id");
-
   try {
     const newPurchase = await new Purchase({
       queenId: queenId._id,
@@ -133,30 +138,37 @@ const createPaymentpaypal = async (req, res) => {
     });
     await newPurchase.save();
     res.status(201);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
+    console.log(req.body);
+    console.log(req.userId);
+    return res.json({ error: "guardado en la base compra PAYPAL " });
   }
 };
 
 const paypalOrder = async (req, res) => {
-  const soli = new paypal.orders.OrdersCreateRequest();
-
-  const { amounts } = req.body;
-
-  soli.requestBody({
-    intent: "CAPTURE",
-    purchase_units: [
-      {
-        amount: {
-          currency_code: "USD",
-          value: `${amounts}`,
+  try {
+    const soli = new paypal.orders.OrdersCreateRequest();
+    const { amounts } = req.body;
+    soli.requestBody({
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: `${amounts}`,
+          },
         },
-      },
-    ],
-  });
-  const respo = await client.execute(soli);
-  console.log(`Order: ${JSON.stringify(respo.result)}`);
-  return res.json({ id: respo.result.id });
+      ],
+    });
+    const respo = await client.execute(soli);
+    console.log(`Order: ${JSON.stringify(respo.result)}`);
+    return res.json({ id: respo.result.id });
+  } catch (error) {
+    console.log(error);
+    console.log(req.body);
+    return res.json({ error: "error al crear pago en PAYPAL" });
+  }
 };
 
 module.exports = {

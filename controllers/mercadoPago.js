@@ -41,6 +41,9 @@ class MercadoPago {
       })
       .catch((err) => {
         console.log(err);
+        return res.status(404).json({
+          message: "Cannot MP",
+        });
       });
   };
 }

@@ -31,6 +31,8 @@ const createQueen = async (req, res) => {
     await newQueen.save();
     res.status(200).json(`Queen created successfully`);
   } catch (error) {
+    console.log(error);
+    console.log(errors);
     return res.status(404).json({
       message: "Cannot create Queen",
     });
@@ -48,6 +50,7 @@ const getQueen = async (req, res) => {
       res.status(200).json(queens);
     }
   } catch (error) {
+    console.log(error);
     return res.status(404).json({
       message: "Cannot found any Queen",
     });
@@ -63,6 +66,7 @@ const editQueen = async (req, res) => {
     });
     res.json(`Queen ${name} edited.`);
   } catch (error) {
+    console.log(error);
     return res.json({
       message: error,
     });
@@ -83,6 +87,7 @@ const deleteQueen = async (req, res) => {
       mensaje: "Queen not found!",
     });
   } catch (error) {
+    console.log(error);
     return res.status(404).json({
       message: "Cannot delete Queen",
       error,

@@ -5,7 +5,6 @@ const token_secret = process.env.TOKEN_SECRET;
 
 const jwtValidator = async (req, res, next) => {
   const accessToken = req.headers["accesstoken"];
-
   try {
     const decode = jwt.verify(accessToken, token_secret);
     req.userId = decode.userId;

@@ -10,6 +10,7 @@ const createCarouselIamge = async (req, res) => {
     await newPhoto.save();
     res.json(`Photo created successfully`);
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Cannot create Photo",
     });
@@ -21,6 +22,7 @@ const getCarouselIamge = async (req, res) => {
     const carousel = await Carousel.find({});
     res.status(200).json(carousel);
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Cannot found any Photo",
     });
@@ -36,6 +38,7 @@ const editCarouselIamge = async (req, res) => {
     });
     res.json("Photo edited.");
   } catch (error) {
+    console.log(error);
     return res.json({
       message: error,
     });
@@ -56,6 +59,7 @@ const deleteCarouselIamge = async (req, res) => {
       mensaje: "Photo not found!",
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Cannot delete Photo",
       error,

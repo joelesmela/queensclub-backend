@@ -12,7 +12,6 @@ const login = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: "Algo salió mal", status: 400 });
   }
-  
 
   const userData = await userNameOrEmail(user);
 
@@ -44,6 +43,9 @@ const login = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    return res.status(404).json({
+      message: "Cannot login",
+    });
   }
 };
 

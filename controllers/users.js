@@ -1,7 +1,6 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
-const { userNameOrEmail } = require("../helpers/loginValidate");
 
 const createUser = async (req, res) => {
   const errors = validationResult(req);
@@ -28,6 +27,8 @@ const createUser = async (req, res) => {
     await newUser.save();
     res.status(200).json({ message: `User created successfully`, status: 200 });
   } catch (error) {
+    console.log(error);
+    console.log(errors);
     return res.status(400).json({
       message: "Cannot create user",
     });
@@ -39,6 +40,7 @@ const getUsers = async (req, res) => {
     const users = await User.find({});
     res.status(200).json(users);
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       mensaje: "Cannot found any user",
     });
@@ -54,6 +56,7 @@ const getInfoUser = async (req, res) => {
     );
     res.json(userData);
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       mensaje: "Cannot found any user",
     });
@@ -75,6 +78,7 @@ const deleteUser = async (req, res) => {
       mensaje: "User not found!",
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Cannot delete user",
       error,
@@ -161,7 +165,8 @@ const editUser = async (req, res) => {
       res.json({ message: "Contraseña incorrecta" });
     }
   } catch (error) {
-    res.json(error);
+    console.log(errors);
+    return res.json(error);
   }
 };
 
