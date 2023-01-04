@@ -38,7 +38,7 @@ route.post(
   createQueen
 );
 
-route.put("/:queenId", isAdmin, editQueen);
+route.post("/:queenId", isAdmin, editQueen);
 
 route.delete("/", isAdmin, deleteQueen);
 

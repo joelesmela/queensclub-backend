@@ -58,7 +58,7 @@ const getQueen = async (req, res) => {
 };
 
 const editQueen = async (req, res) => {
-  const { photoCarrusel, coverImage, name } = req.body;
+  const { photoCarrusel, coverImage, name  } = req.body;
   const { queenId } = req.params;
 
   try {
