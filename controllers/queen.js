@@ -58,13 +58,15 @@ const getQueen = async (req, res) => {
 };
 
 const editQueen = async (req, res) => {
-  const { name, coverImage } = req.body;
+  const { photoCarrusel, coverImage, name } = req.body;
+  const { queenId } = req.params;
+
   try {
-    await Queen.findByIdAndUpdate(req.params.queenId, {
-      name,
+    await Queen.findByIdAndUpdate(queenId, {
+      photoCarrusel,
       coverImage,
     });
-    res.json(`Queen ${name} edited.`);
+    res.json({ message: `Queen ${name} edited.` });
   } catch (error) {
     console.log(error);
     return res.json({
